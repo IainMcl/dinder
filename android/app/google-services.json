@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "688499823351",
+    "project_id": "dinder-app1",
+    "storage_bucket": "dinder-app1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:688499823351:android:699821d2621630ff08f9f2",
+        "android_client_info": {
+          "package_name": "com.example.dinder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "688499823351-u1240pr0gvffb8mfpoopdfpu5di5f0vn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUx_5XyKp8Mj1hDlWoNZdja5LIFHzDY_s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "688499823351-u1240pr0gvffb8mfpoopdfpu5di5f0vn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
