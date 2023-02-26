@@ -52,7 +52,10 @@ class Group {
       lastUpdated: json['lastUpdated'],
       lastUpdatedBy: json['lastUpdatedBy'],
       mealDate: json['mealDate'],
-      mealLikes: json['mealLikes'],
+      mealLikes: json['mealLikes'] != null
+          ? List<MealLikes>.from(
+              json['mealLikes'].map((x) => MealLikes.fromJson(x)))
+          : null,
     );
   }
 
@@ -84,7 +87,13 @@ class Group {
   }
 
   Map<String, dynamic> toMap() {
-    return {
+    // convert mealLikes to mappable format
+    List<Map<String, dynamic>> mealLikesMappable = [];
+    if (mealLikes != null) {
+      mealLikesMappable = mealLikes!.map((x) => x.toMap()).toList();
+    }
+
+    var ret = {
       'joinCode': joinCode,
       'name': name,
       'members': members,
@@ -93,8 +102,9 @@ class Group {
       'lastUpdated': lastUpdated,
       'lastUpdatedBy': lastUpdatedBy,
       'mealDate': mealDate,
-      'mealLikes': mealLikes,
+      'mealLikes': mealLikesMappable
     };
+    return ret;
   }
 
   // Getters
@@ -130,42 +140,64 @@ class Group {
     CurrentUser currentUser = CurrentUser();
     await currentUser.init();
     lastUpdatedBy = currentUser.user.id;
-    FirebaseFirestore.instance.collection('groups').doc(_id).update(toMap());
+    await FirebaseFirestore.instance
+        .collection('groups')
+        .doc(_id)
+        .update(toMap())
+        .onError((error, stackTrace) =>
+            {_logger.e("Error updating group: $error : $stackTrace")});
+    _logger.d("Updated group $id");
   }
 
   void addMember(String uid) {
+    _logger.d("Adding member $uid to group $id");
     members.add(uid);
     update();
+    _logger.d("Added member $uid to group $id");
   }
 
   void removeMember(String uid) {
+    _logger.d("Removing member $uid from group $id");
     members.remove(uid);
     update();
+    _logger.d("Removed member $uid from group $id");
   }
 
   void addAdmin(String uid) {
+    _logger.d("Adding admin $uid to group $id");
     CurrentUser currentUser = CurrentUser();
     if (admins.contains(currentUser.uid)) {
       admins.add(uid);
       update();
+      _logger.d("Added admin $uid to group $id");
+    } else {
+      _logger.e(
+          "User ${currentUser.uid} is not an admin of group $id and cannot add admins");
     }
   }
 
   void removeAdmin(String uid) {
+    _logger.d("Removing admin $uid from group $id");
     CurrentUser currentUser = CurrentUser();
     if (admins.contains(currentUser.uid)) {
       admins.remove(uid);
       update();
+      _logger.d("Removed admin $uid from group $id");
+    } else {
+      _logger.e(
+          "User ${currentUser.uid} is not an admin of group $id and cannot remove admins");
     }
   }
 
   void addMealLike(String mealId, String userId) {
+    _logger.d("Adding like for meal $mealId");
     mealLikes ??= [
       MealLikes(mealId: mealId, userIds: [userId])
     ];
     mealLikes!.firstWhere(
       (element) => element.mealId == mealId,
       orElse: () {
+        _logger.d("Meal has no likes yet. Adding new MealLike");
         mealLikes!.add(MealLikes(mealId: mealId, userIds: [userId]));
         return MealLikes(mealId: mealId, userIds: [userId]);
       },
@@ -174,12 +206,22 @@ class Group {
   }
 
   void delete() {
+    _logger.d("Deleting group $id");
     // Check if the current user is an admin of the group
     CurrentUser currentUser = CurrentUser();
     if (admins.contains(currentUser.uid)) {
-      FirebaseFirestore.instance.collection('groups').doc(_id).delete();
+      FirebaseFirestore.instance
+          .collection('groups')
+          .doc(_id)
+          .delete()
+          .catchError((error) {
+        _logger.e("Error deleting group $id: $error");
+      });
+      _logger.d("Deleted group $id");
     } else {
       // Raise error that the current user is not an admin
+      _logger
+          .e("Current user (${currentUser.uid}) is not an admin of group $_id");
       throw Exception(
           'Current user (${currentUser.uid}) is not an admin of group ($_id)');
     }
@@ -203,11 +245,19 @@ class Group {
         var mealDoc = await FirebaseFirestore.instance
             .collection('meals')
             .doc(mealLikes.mealId)
-            .get();
+            .get()
+            .onError((error, stackTrace) {
+          _logger.e("Error getting meal ${mealLikes.mealId}: $error");
+
+          return Future<DocumentSnapshot<Map<String, dynamic>>>.value(null);
+        });
+
         if (!mealDoc.exists) return Future<Meal>.value(null);
         Meal meal = Meal.fromDocument(mealDoc);
         _logger.i('Found match for meal ${meal.id}');
         _mealMatchController.add(meal);
+        _logger.i(
+            "Match found for meal ${meal.id}. Updated mealMatchController stream");
         return Future<Meal>.value(meal);
       }
     }
@@ -215,8 +265,10 @@ class Group {
   }
 
   void resetGroupMeal() {
+    _logger.d("Resetting group meal for group $id");
     mealDate = null;
     mealLikes = null;
     update();
+    _logger.d("Reset group meal for group $id");
   }
 }

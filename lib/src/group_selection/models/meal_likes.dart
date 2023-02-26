@@ -1,4 +1,7 @@
+import 'package:logger/logger.dart';
+
 class MealLikes {
+  Logger _logger = Logger();
   final String mealId;
   final List<String>? userIds;
   MealLikes({
@@ -8,7 +11,25 @@ class MealLikes {
 
   void addLike(String userId) {
     if (userIds == null) return;
-
+    if (userIds!.contains(userId)) {
+      _logger.w("User $userId already liked $mealId");
+      return;
+    }
     userIds!.add(userId);
+    _logger.d("Added like for $mealId from $userId");
+  }
+
+  static fromJson(x) {
+    return MealLikes(
+      mealId: x['mealId'],
+      userIds: x['userIds'],
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'mealId': mealId,
+      'userIds': userIds,
+    };
   }
 }

@@ -58,13 +58,17 @@ class SelectionService {
   }
 
   Future<List<Meal>> getMeals(int i) async {
+    _logger.d("Getting $i meals");
     if (!fetchedMeals) {
+      _logger.i(
+          "Meals have not currently been fetched, fetching now from getMeals.");
       meals = await Meal.getMeals();
       fetchedMeals = true;
     }
     int endIndex = nMealsShown + i;
     // Get the next i meals from the list
     if (meals.length < nMealsShown + i) {
+      _logger.i("Not enough meals to show, showing all remaining meals.");
       endIndex = meals.length;
     }
     List<Meal> nextMeals = meals.sublist(nMealsShown, endIndex);
