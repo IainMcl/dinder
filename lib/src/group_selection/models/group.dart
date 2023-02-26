@@ -213,4 +213,10 @@ class Group {
     }
     return Future<Meal>.value(null);
   }
+
+  void resetGroupMeal() {
+    mealDate = null;
+    mealLikes = null;
+    update();
+  }
 }

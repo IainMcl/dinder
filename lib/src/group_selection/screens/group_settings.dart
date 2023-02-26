@@ -6,6 +6,7 @@ import 'package:dinder/src/shared/widgets/three_dots_menu.dart';
 import 'package:dinder/src/user/models/current_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
+import 'package:logger/logger.dart';
 
 class GroupSettings extends StatefulWidget {
   Group group;
@@ -17,13 +18,14 @@ class GroupSettings extends StatefulWidget {
 }
 
 class _GroupSettingsState extends State<GroupSettings> {
-  late TextEditingController _groupTitleController;
-  bool _isEnabled = false;
+  Logger _logger = Logger();
+  final TextEditingController _groupTitleController =
+      TextEditingController(text: "Enter group name");
 
+  bool _isEnabled = false;
   @override
   void initState() {
     super.initState();
-    _groupTitleController = TextEditingController(text: "Enter group name");
   }
 
   final GlobalKey<EditSuccessState> editSuccessKey =
@@ -32,8 +34,6 @@ class _GroupSettingsState extends State<GroupSettings> {
   void toggleEditSuccessState() {
     editSuccessKey.currentState?.toggleState();
   }
-
-  var _currIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -104,6 +104,8 @@ class _GroupSettingsState extends State<GroupSettings> {
             // Continue button to go to the selection screen
             ElevatedButton(
               onPressed: () {
+                _logger.d(
+                    "Continue to Selection screen for group ${widget.group.name}");
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -113,8 +115,14 @@ class _GroupSettingsState extends State<GroupSettings> {
                   ),
                 );
               },
-              child: Text("Continue"),
+              child: const Text("Continue"),
             ),
+            ElevatedButton(
+                onPressed: () {
+                  _logger.d("Reset group meal");
+                  widget.group.resetGroupMeal();
+                },
+                child: const Text("Reset group meal"))
           ],
         ),
       ),

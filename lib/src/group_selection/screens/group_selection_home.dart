@@ -62,7 +62,7 @@ class _GroupSelectionHomeState extends State<GroupSelectionHome> {
         children: [
           // Horizontal scrollable list of groups
           Container(
-            height: 200,
+            height: 400,
             width: double.infinity,
             color: Colors.red,
             child: FutureBuilder(

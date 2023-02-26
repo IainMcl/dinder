@@ -52,10 +52,11 @@ class CardBack extends StatelessWidget {
                         fit: StackFit.expand,
                         children: [
                           // image
-                          Image.network(
-                            'https://images.pexels.com/photos/376464/pexels-photo-376464.jpeg',
-                            fit: BoxFit.cover,
-                          ),
+                          FadeInImage(
+                              image: NetworkImage(card.image ?? ""),
+                              placeholder: const AssetImage(
+                                  "assets/images/knifeAndFork.png"),
+                              fit: BoxFit.cover),
                           // prep time and cooking time as icon then number in top right
                           Positioned(
                             top: 0,

@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dinder/src/selection/models/ingredient.dart';
-import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 
 class Meal {
   late String _id;
@@ -80,7 +80,13 @@ class Meal {
 
   static Future<List<Meal>> getMeals() async {
     List<Meal> meals = [];
-    var mealDocs = await FirebaseFirestore.instance.collection("meals").get();
+    var mealDocs = await FirebaseFirestore.instance
+        .collection("meals")
+        .get()
+        .catchError((e) => {
+              Logger().e("Error retrieving meals: $e"),
+            });
+
     meals = mealDocs.docs.map((e) => Meal.fromDocument(e)).toList();
     return meals;
   }

@@ -13,15 +13,15 @@ class CardFront extends StatelessWidget {
     return Stack(
       fit: StackFit.expand,
       children: [
-        Image.network(
-          'https://images.pexels.com/photos/376464/pexels-photo-376464.jpeg',
-          fit: BoxFit.cover,
-        ),
+        FadeInImage(
+            image: NetworkImage(card.image ?? ""),
+            placeholder: const AssetImage("assets/images/knifeAndFork.png"),
+            fit: BoxFit.cover),
         Positioned(
           bottom: 0,
           left: 0,
           child: Container(
-            padding: EdgeInsets.all(5),
+            padding: const EdgeInsets.all(5),
             color: Colors.black54,
             width: MediaQuery.of(context).size.width,
             child: Column(
