@@ -64,7 +64,8 @@ class Group {
     var admins = List<String>.from(map['admins']);
     var mealLikes;
     if (map['mealLikes'] != null) {
-      mealLikes = List<Map<String, String>>.from(map['mealLikes']);
+      mealLikes = List<MealLikes>.from(
+          map['mealLikes'].map((x) => MealLikes.fromMap(x)));
     }
     var created = (map['created'] as Timestamp).toDate();
     var lastUpdated = (map['lastUpdated'] as Timestamp).toDate();

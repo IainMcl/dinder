@@ -152,6 +152,7 @@ class _SelectionState extends State<Selection> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               FloatingActionButton(
+                heroTag: "leftSwipe",
                 backgroundColor: Colors.white,
                 onPressed: () {
                   //Swipe to left
@@ -159,12 +160,14 @@ class _SelectionState extends State<Selection> {
                 },
                 child: const Icon(Icons.close, color: Colors.redAccent),
               ),
+              // FloatingActionButton(
+              //   heroTag: "undo",
+              //   backgroundColor: Colors.white,
+              //   onPressed: () {},
+              //   child: const Icon(Icons.undo, color: Colors.yellow),
+              // ),
               FloatingActionButton(
-                backgroundColor: Colors.white,
-                onPressed: () {},
-                child: const Icon(Icons.undo, color: Colors.yellow),
-              ),
-              FloatingActionButton(
+                heroTag: "rightSwipe",
                 backgroundColor: Colors.white,
                 onPressed: () {
                   //Swipe to right
@@ -177,7 +180,7 @@ class _SelectionState extends State<Selection> {
               ),
             ],
           ),
-          const SizedBox(height: 15),
+          const SizedBox(height: 45),
         ],
       ),
     );

@@ -32,4 +32,12 @@ class MealLikes {
       'userIds': userIds,
     };
   }
+
+  factory MealLikes.fromMap(x) {
+    var userIds = List<String>.from(x['userIds']);
+    return MealLikes(
+      mealId: x['mealId'],
+      userIds: userIds,
+    );
+  }
 }
