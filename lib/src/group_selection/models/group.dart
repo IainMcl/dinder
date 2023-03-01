@@ -228,15 +228,17 @@ class Group {
     }
   }
 
-  Future<Meal>? checkForMatches() async {
+  Future<Meal?> checkForMatches() async {
     _logger.i('Checking for matches in group $_id');
     // Get the most recent group document
     var groupCollection = FirebaseFirestore.instance.collection('groups');
     var groupDoc = await groupCollection.doc(_id).get();
 
-    if (!groupDoc.exists) return Future<Meal>.value(null);
+    if (!groupDoc.exists) return null;
 
     Group group = Group.fromMap(groupDoc.data()!);
+
+    if (group.mealLikes == null) return null;
 
     int nMembers = group.members.length;
 
@@ -249,11 +251,10 @@ class Group {
             .get()
             .onError((error, stackTrace) {
           _logger.e("Error getting meal ${mealLikes.mealId}: $error");
-
           return Future<DocumentSnapshot<Map<String, dynamic>>>.value(null);
         });
 
-        if (!mealDoc.exists) return Future<Meal>.value(null);
+        if (!mealDoc.exists) return null;
         Meal meal = Meal.fromDocument(mealDoc);
         _logger.i('Found match for meal ${meal.id}');
         _mealMatchController.add(meal);
@@ -262,7 +263,7 @@ class Group {
         return Future<Meal>.value(meal);
       }
     }
-    return Future<Meal>.value(null);
+    return null;
   }
 
   void resetGroupMeal() {

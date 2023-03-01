@@ -19,7 +19,7 @@ class SelectionService {
 
   Future<void> init() async {
     await _currentUser.init();
-    meals = await Meal.getMeals();
+    meals = await Meal.getMeals(getCurrentUserMealLikes());
     fetchedMeals = true;
     // order meals randomly
     meals.shuffle();
@@ -57,12 +57,25 @@ class SelectionService {
     group.addMealLike(card.id, _currentUser.user.id);
   }
 
+  List<String> getCurrentUserMealLikes() {
+    List<String> currentUserMealLikes = [];
+    if (group.mealLikes != null) {
+      // Current user meal likes is a list of meal ids that the current user has liked
+      for (var mealLike in group.mealLikes!) {
+        if (mealLike.userIds!.contains(_currentUser.user.id)) {
+          currentUserMealLikes.add(mealLike.mealId);
+        }
+      }
+    }
+    return currentUserMealLikes;
+  }
+
   Future<List<Meal>> getMeals(int i) async {
     _logger.d("Getting $i meals");
     if (!fetchedMeals) {
       _logger.i(
           "Meals have not currently been fetched, fetching now from getMeals.");
-      meals = await Meal.getMeals();
+      meals = await Meal.getMeals(getCurrentUserMealLikes());
       fetchedMeals = true;
     }
     int endIndex = nMealsShown + i;

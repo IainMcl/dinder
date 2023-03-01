@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dinder/src/group_selection/models/meal_likes.dart';
 import 'package:dinder/src/selection/models/ingredient.dart';
 import 'package:logger/logger.dart';
 
@@ -78,10 +79,16 @@ class Meal {
     return meal;
   }
 
-  static Future<List<Meal>> getMeals() async {
+  static Future<List<Meal>> getMeals([List<String>? userLikedMeals]) async {
+    userLikedMeals ??= [];
     List<Meal> meals = [];
     var mealDocs = await FirebaseFirestore.instance
         .collection("meals")
+        // Only get meals who's id is not in the user's liked meals
+        .where(
+          FieldPath.documentId,
+          whereNotIn: userLikedMeals,
+        )
         .get()
         .catchError((e) => {
               Logger().e("Error retrieving meals: $e"),

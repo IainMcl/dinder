@@ -61,6 +61,9 @@ class _SelectionState extends State<Selection> {
 
   Future<List<Meal>> getNextMeals(int i) async {
     List<Meal> newMeals = await _selectionService.getMeals(i);
+    if (newMeals.isEmpty) {
+      newMeals.add(_emptyMeal);
+    }
     meals.addAll(newMeals);
     return Future.value(newMeals);
   }
