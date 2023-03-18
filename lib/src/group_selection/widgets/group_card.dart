@@ -1,5 +1,5 @@
 import 'package:dinder/src/group_selection/models/group.dart';
-import 'package:dinder/src/group_selection/screens/group_settings.dart';
+import 'package:dinder/src/group_selection/screens/group_settings2.dart';
 import 'package:flutter/material.dart';
 
 class GroupCard extends StatelessWidget {
@@ -15,7 +15,7 @@ class GroupCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => GroupSettings(group: group),
+            builder: (context) => EditGroupPage(group: group),// GroupSettings(group: group),
           ),
         );
       },

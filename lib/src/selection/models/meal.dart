@@ -54,15 +54,15 @@ class Meal {
   factory Meal.fromDocument(DocumentSnapshot doc) {
     var ingredients = doc.get("ingredients") as List<dynamic>;
     List<Ingredient> ingredientsList = [];
-    ingredients.forEach((element) {
+    for (var element in ingredients) {
       ingredientsList.add(Ingredient.fromMap(element));
-    });
+    }
 
     var instructions = doc.get("instructions") as List<dynamic>;
     List<String> instructionsList = [];
-    instructions.forEach((element) {
+    for (var element in instructions) {
       instructionsList.add(element);
-    });
+    }
 
     Meal meal = Meal(
       title: doc.get("title"),

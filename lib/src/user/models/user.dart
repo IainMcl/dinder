@@ -41,6 +41,14 @@ class User {
     return User.fromDocument(doc);
   }
 
+  static Future<List<User>> getUsers(List<String> ids) async {
+    List<User> users = [];
+    for (String id in ids) {
+      users.add(await getUser(id));
+    }
+    return users;
+  }
+
   void saveUser() {
     FirebaseFirestore.instance.collection("users").doc(_id).set(toMap());
   }

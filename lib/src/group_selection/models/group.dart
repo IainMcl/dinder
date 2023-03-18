@@ -206,10 +206,11 @@ class Group {
     update();
   }
 
-  void delete() {
+  Future<void> delete() async {
     _logger.d("Deleting group $id");
     // Check if the current user is an admin of the group
     CurrentUser currentUser = CurrentUser();
+    await currentUser.init();
     if (admins.contains(currentUser.uid)) {
       FirebaseFirestore.instance
           .collection('groups')
