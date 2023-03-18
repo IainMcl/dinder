@@ -1,21 +1,24 @@
 import 'package:dinder/src/auth/screens/auth_page.dart';
 import 'package:dinder/src/auth/screens/login.dart';
+import 'package:dinder/src/auth/screens/sign_up.dart';
+import 'package:dinder/src/group_selection/screens/group_selection_home.dart';
 import 'package:dinder/src/selection/screens/selection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logger/logger.dart';
 
+import 'group_selection/screens/group_settings2.dart';
 import 'sample_feature/sample_item_details_view.dart';
 import 'sample_feature/sample_item_list_view.dart';
 import 'settings/settings_controller.dart';
 import 'settings/settings_view.dart';
 
 /// The Widget that configures your application.
-class MyApp extends StatelessWidget {
+class Dinder extends StatelessWidget {
   Logger _logger = Logger();
 
-  MyApp({
+  Dinder({
     super.key,
     required this.settingsController,
   });
@@ -33,6 +36,15 @@ class MyApp extends StatelessWidget {
       animation: settingsController,
       builder: (BuildContext context, Widget? child) {
         return MaterialApp(
+          initialRoute: '/',
+          routes: {
+            '/': (context) => const AuthPage(),
+            '/auth/login': (context) => const Login(),
+            '/auth/signup': (context) => const SignUpScreen(),
+            '/group/group_selection': (context) => GroupSelectionHome(),
+            // '/group/edit_group': (context) => EditGroupPage(),
+          },
+
           // Providing a restorationScopeId allows the Navigator built by the
           // MaterialApp to restore the navigation stack when a user leaves and
           // returns to the app after it has been killed while running in the

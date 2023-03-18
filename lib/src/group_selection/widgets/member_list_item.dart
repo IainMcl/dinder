@@ -74,11 +74,18 @@ class MemberListItem extends StatelessWidget {
                               group.delete();
                               // Pop the context back to the group selection home screen
                               // TODO: Implement this with routes
-                              Navigator.popUntil(
+                              // Navigator.popUntil(
+                              //     context,
+                              //     (route) =>
+                              //         route.settings.name ==
+                              //         "/group_selection");
+                              Navigator.pushAndRemoveUntil(
                                   context,
-                                  (route) =>
-                                      route.settings.name ==
-                                      "/group_selection");
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          GroupSelectionHome()),
+                                  (route) => false);
+                              return;
                             }
                             Navigator.pop(context);
                           },

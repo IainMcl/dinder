@@ -70,12 +70,17 @@ class _GroupSelectionHomeState extends State<GroupSelectionHome> {
               builder: (context, snapshot) {
                 if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                   return Center(
-                    child: ListView.builder(
-                      // scrollDirection: Axis.horizontal,
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) {
-                        return GroupCard(group: snapshot.data![index]);
+                    child: RefreshIndicator(
+                      onRefresh: () async {
+                        setState(() {});
                       },
+                      child: ListView.builder(
+                        // scrollDirection: Axis.horizontal,
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) {
+                          return GroupCard(group: snapshot.data![index]);
+                        },
+                      ),
                     ),
                   );
                 } else if (snapshot.hasData && snapshot.data!.isEmpty) {
