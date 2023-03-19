@@ -4,11 +4,13 @@
     "colors",
     "curr",
     "Dialog",
+    "Dinder",
     "favorite",
     "Firestore",
     "grng",
     "Objs",
     "Rect",
+    "signup",
     "Swipeable"
   ]
 }
