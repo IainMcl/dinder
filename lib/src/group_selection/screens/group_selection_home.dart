@@ -18,7 +18,7 @@ class _GroupSelectionHomeState extends State<GroupSelectionHome> {
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<CurrentUser>(context);
-    Logger _logger = Logger();
+    final Logger _logger = Logger();
     final GroupSelectionService _groupSelectionService =
         GroupSelectionService(currentUser);
 

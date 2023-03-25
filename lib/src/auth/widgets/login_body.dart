@@ -18,6 +18,7 @@ class LoginBodyScreen extends StatefulWidget {
 class _LoginBodyScreenState extends State<LoginBodyScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
   void signUserIn() async {
     // Show spinner dialog
     showDialog(
@@ -28,9 +29,10 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
           );
         });
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      var ret = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
       Navigator.pop(context);
+      print('User signed in: ${ret.user!.uid}');
     } on FirebaseAuthException catch (error) {
       Navigator.pop(context);
       switch (error.code) {
@@ -44,10 +46,43 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
         default:
           showErrorMessage("Something went wrong");
       }
+      print('Sign-in failed: ${error.code}');
     } catch (error) {
       showErrorMessage("Something went wrong");
+      print('Sign-in failed: $error');
     }
   }
+
+  // void signUserIn() async {
+  //   // Show spinner dialog
+  //   showDialog(
+  //       context: context,
+  //       builder: (context) {
+  //         return const Center(
+  //           child: CircularProgressIndicator(),
+  //         );
+  //       });
+  //   try {
+  //     var ret = await FirebaseAuth.instance.signInWithEmailAndPassword(
+  //         email: emailController.text, password: passwordController.text);
+  //     Navigator.pop(context);
+  //   } on FirebaseAuthException catch (error) {
+  //     Navigator.pop(context);
+  //     switch (error.code) {
+  //       case "user-not-found":
+  //         showErrorMessage("No user found for that email");
+  //         break;
+  //       case "wrong-password":
+  //       case "invalid-email":
+  //         showErrorMessage("Wrong email or password");
+  //         break;
+  //       default:
+  //         showErrorMessage("Something went wrong");
+  //     }
+  //   } catch (error) {
+  //     showErrorMessage("Something went wrong");
+  //   }
+  // }
 
   void showErrorMessage(String message) {
     showDialog(

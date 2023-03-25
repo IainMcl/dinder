@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dinder/src/user/models/dietary_requirements.dart';
+import 'package:logger/logger.dart';
 
 class User {
+  final Logger _logger = Logger();
   late final String _id;
   String? name;
   String? email;
@@ -42,9 +44,14 @@ class User {
   }
 
   static Future<List<User>> getUsers(List<String> ids) async {
+    Logger logger = Logger();
     List<User> users = [];
     for (String id in ids) {
-      users.add(await getUser(id));
+      try {
+        users.add(await getUser(id));
+      } catch (e) {
+        logger.e(e);
+      }
     }
     return users;
   }
