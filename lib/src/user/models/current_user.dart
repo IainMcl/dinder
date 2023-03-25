@@ -2,8 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dinder/src/user/models/dietary_requirements.dart';
 import 'package:dinder/src/user/models/user.dart' as account_user;
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
-class CurrentUser {
+class CurrentUser extends ChangeNotifier {
   late final account_user.User _user;
   bool initialized = false;
 
@@ -14,6 +15,7 @@ class CurrentUser {
     var doc = await userCollection.doc(auth.currentUser!.uid).get();
     _user = account_user.User.fromDocument(doc);
     initialized = true;
+    notifyListeners();
   }
 
   // Getters
@@ -25,11 +27,10 @@ class CurrentUser {
   DietaryRequirements? get dietaryRequirements => _user.dietaryRequirements;
 
   // Setters
-  set name(String? name) => _user.name = name;
-  set email(String? email) => _user.email = email;
-  set groups(List<String>? groups) => _user.groups = groups;
-  set dietaryRequirements(DietaryRequirements? dietaryRequirements) =>
-      _user.dietaryRequirements = dietaryRequirements;
+  void setCurrentUser(account_user.User user) {
+    _user = user;
+    notifyListeners();
+  }
 
   // Methods
   void update() {
@@ -38,6 +39,8 @@ class CurrentUser {
         .collection('users')
         .doc(_user.id)
         .update(_user.toMap());
+
+    notifyListeners();
   }
 
   void addGroup(String groupId) {

@@ -1,10 +1,12 @@
 import 'package:dinder/src/group_selection/models/group.dart';
 import 'package:dinder/src/group_selection/widgets/member_list_item.dart';
+import 'package:dinder/src/user/models/current_user.dart';
 import 'package:dinder/src/user/models/user.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
+import 'package:provider/provider.dart';
 
 class EditGroupPage extends StatefulWidget {
   Group group;
@@ -27,6 +29,7 @@ class _EditGroupPageState extends State<EditGroupPage> {
 
   @override
   Widget build(BuildContext context) {
+    CurrentUser currentUser = Provider.of<CurrentUser>(context);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -163,12 +166,11 @@ class _EditGroupPageState extends State<EditGroupPage> {
                       itemCount: snapshot.data.length,
                       itemBuilder: (BuildContext context, int index) {
                         return MemberListItem(
-                            group: widget.group,
-                            user: snapshot.data[index],
-                            // TODO: add condition if the currentuser is an admin
-                            isAdmin: widget.group.admins
-                                .contains(snapshot.data[index].id),
-                            isCurrentUserAdmin: true);
+                          group: widget.group,
+                          user: snapshot.data[index],
+                          isAdmin: widget.group.admins
+                              .contains(snapshot.data[index].id),
+                        );
                       },
                     );
                   } else {

@@ -5,8 +5,10 @@ import 'package:dinder/src/selection/services/selection_service.dart';
 import 'package:dinder/src/selection/widgets/card_view.dart';
 import 'package:dinder/src/selection/widgets/match_modal.dart';
 import 'package:dinder/src/shared/widgets/three_dots_menu.dart';
+import 'package:dinder/src/user/models/current_user.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:provider/provider.dart';
 import 'package:swipeable_card_stack/swipeable_card_stack.dart';
 
 class Selection extends StatefulWidget {
@@ -18,62 +20,63 @@ class Selection extends StatefulWidget {
 }
 
 class _SelectionState extends State<Selection> {
-  final Logger _logger = Logger();
-  //create a SwipeableCardSectionController
-  final SwipeableCardSectionController _cardController =
-      SwipeableCardSectionController();
-
-  late SelectionService _selectionService;
-
-  List<Meal> meals = [];
-
-  final Meal _emptyMeal = Meal(
-    title: "No more meals",
-    description: "No more meals",
-    image: "No more meals",
-    ingredients: List<Ingredient>.empty(),
-    cookingTime: 0,
-    prepTime: 0,
-    servings: 0,
-    instructions: List<String>.empty(),
-  );
-
-  @override
-  void initState() {
-    super.initState();
-    _selectionService = SelectionService(widget.group);
-    _selectionService.group.checkForMatches();
-    listenToMatchStream();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  void listenToMatchStream() {
-    _selectionService.group.mealMatchStream.listen((match) {
-      _logger.d("Matched meal: ${match.title}");
-      // Show match modal with the matched meal
-      MatchModal(meal: match);
-    });
-  }
-
-  Future<List<Meal>> getNextMeals(int i) async {
-    List<Meal> newMeals = await _selectionService.getMeals(i);
-    if (newMeals.isEmpty) {
-      newMeals.add(_emptyMeal);
-    }
-    meals.addAll(newMeals);
-    return Future.value(newMeals);
-  }
-
-  void removeMeal(Meal meal) {
-    meals.remove(meal);
-  }
-
   @override
   Widget build(BuildContext context) {
+    CurrentUser currentUser = Provider.of<CurrentUser>(context);
+    final Logger _logger = Logger();
+    //create a SwipeableCardSectionController
+    final SwipeableCardSectionController _cardController =
+        SwipeableCardSectionController();
+
+    late SelectionService _selectionService;
+
+    List<Meal> meals = [];
+
+    void listenToMatchStream() {
+      _selectionService.group.mealMatchStream.listen((match) {
+        _logger.d("Matched meal: ${match.title}");
+        // Show match modal with the matched meal
+        MatchModal(meal: match);
+      });
+    }
+
+    final Meal _emptyMeal = Meal(
+      title: "No more meals",
+      description: "No more meals",
+      image: "No more meals",
+      ingredients: List<Ingredient>.empty(),
+      cookingTime: 0,
+      prepTime: 0,
+      servings: 0,
+      instructions: List<String>.empty(),
+    );
+
+    @override
+    void initState() {
+      super.initState();
+      _selectionService = SelectionService(widget.group, currentUser);
+      _selectionService.group.checkForMatches();
+      listenToMatchStream();
+    }
+
+    @override
+    void dispose() {
+      super.dispose();
+    }
+
+    Future<List<Meal>> getNextMeals(int i) async {
+      List<Meal> newMeals = await _selectionService.getMeals(i);
+      if (newMeals.isEmpty) {
+        newMeals.add(_emptyMeal);
+      }
+      meals.addAll(newMeals);
+      return Future.value(newMeals);
+    }
+
+    void removeMeal(Meal meal) {
+      meals.remove(meal);
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Swipeable Card Stack"),

@@ -26,6 +26,7 @@ dependencies:
   google_fonts: ^4.0.3
   hexcolor: ^3.0.1
   logger: ^1.1.0
+  provider: ^6.0.5
   swipeable_card_stack: ^0.0.5
   uuid: ^3.0.7
 

@@ -7,6 +7,7 @@ import 'package:dinder/src/user/models/current_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:logger/logger.dart';
+import 'package:provider/provider.dart';
 
 class GroupSettings extends StatefulWidget {
   Group group;
@@ -37,6 +38,7 @@ class _GroupSettingsState extends State<GroupSettings> {
 
   @override
   Widget build(BuildContext context) {
+    CurrentUser currentUser = Provider.of<CurrentUser>(context);
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -120,7 +122,7 @@ class _GroupSettingsState extends State<GroupSettings> {
             ElevatedButton(
                 onPressed: () {
                   _logger.d("Reset group meal");
-                  widget.group.resetGroupMeal();
+                  widget.group.resetGroupMeal(currentUser);
                 },
                 child: const Text("Reset group meal"))
           ],

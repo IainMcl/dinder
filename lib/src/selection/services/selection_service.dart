@@ -10,15 +10,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class SelectionService {
   final _logger = Logger();
   late Group group;
-  final CurrentUser _currentUser = CurrentUser();
+  final CurrentUser _currentUser;
   List<Meal> meals = [];
   bool fetchedMeals = false;
   int nMealsShown = 0;
 
-  SelectionService(this.group);
+  SelectionService(this.group, this._currentUser);
 
   Future<void> init() async {
-    await _currentUser.init();
     meals = await Meal.getMeals(getCurrentUserMealLikes());
     fetchedMeals = true;
     // order meals randomly
@@ -54,7 +53,7 @@ class SelectionService {
     if (!_currentUser.initialized) {
       await _currentUser.init();
     }
-    group.addMealLike(card.id, _currentUser.user.id);
+    group.addMealLike(card.id, _currentUser.user.id, _currentUser);
   }
 
   List<String> getCurrentUserMealLikes() {

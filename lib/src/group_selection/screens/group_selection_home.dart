@@ -3,9 +3,11 @@ import 'package:dinder/src/group_selection/screens/group_settings.dart';
 import 'package:dinder/src/group_selection/services/group_selection_service.dart';
 import 'package:dinder/src/group_selection/widgets/group_card.dart';
 import 'package:dinder/src/shared/widgets/three_dots_menu.dart';
+import 'package:dinder/src/user/models/current_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
+import 'package:provider/provider.dart';
 
 class GroupSelectionHome extends StatefulWidget {
   @override
@@ -13,41 +15,45 @@ class GroupSelectionHome extends StatefulWidget {
 }
 
 class _GroupSelectionHomeState extends State<GroupSelectionHome> {
-  Logger _logger = Logger();
-  // final GroupSelectionService _groupSelectionService = GroupSelectionService();
-
-  void _createGroup() async {
-    GroupSelectionService groupSelectionService = GroupSelectionService();
-    await groupSelectionService.init();
-    var group = await groupSelectionService.createGroup('New group');
-
-    // Move the user to the group settings page for the new group
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => GroupSettings(group: group),
-      ),
-    );
-  }
-
-  // text controller for the join code text field
-  final TextEditingController _joinCodeController = TextEditingController();
-
-  void joinGroup() async {
-    GroupSelectionService groupSelectionService = GroupSelectionService();
-    await groupSelectionService.init();
-    groupSelectionService.joinGroup(_joinCodeController.text);
-  }
-
-  Future<List<Group>> getUserGroups() async {
-    GroupSelectionService groupSelectionService = GroupSelectionService();
-    await groupSelectionService.init();
-    List<Group> groups = await groupSelectionService.getGroups();
-    return groups;
-  }
-
   @override
   Widget build(BuildContext context) {
+    final currentUser = Provider.of<CurrentUser>(context);
+    Logger _logger = Logger();
+    final GroupSelectionService _groupSelectionService =
+        GroupSelectionService(currentUser);
+
+    void _createGroup() async {
+      var group = await _groupSelectionService.createGroup('New group');
+
+      // Move the user to the group settings page for the new group
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => GroupSettings(group: group),
+        ),
+      );
+    }
+
+    // text controller for the join code text field
+    final TextEditingController _joinCodeController = TextEditingController();
+
+    void joinGroup() async {
+      Group joinedGroup =
+          await _groupSelectionService.joinGroup(_joinCodeController.text);
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => GroupSettings(group: joinedGroup),
+        ),
+      );
+    }
+
+    Future<List<Group>> getUserGroups() async {
+      List<Group> groups = await _groupSelectionService.getGroups();
+      return groups;
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Group Selection'),
@@ -78,7 +84,10 @@ class _GroupSelectionHomeState extends State<GroupSelectionHome> {
                         // scrollDirection: Axis.horizontal,
                         itemCount: snapshot.data!.length,
                         itemBuilder: (context, index) {
-                          return GroupCard(group: snapshot.data![index]);
+                          return GroupCard(
+                            group: snapshot.data![index],
+                            currentUserId: currentUser.uid,
+                          );
                         },
                       ),
                     ),

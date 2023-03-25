@@ -12,13 +12,9 @@ class GroupSelectionService {
   late final CollectionReference _groupsCollection;
   late final CurrentUser _currentUser;
 
-  GroupSelectionService() {
+  GroupSelectionService(CurrentUser user) {
+    _currentUser = user;
     _groupsCollection = FirebaseFirestore.instance.collection('groups');
-    _currentUser = CurrentUser();
-  }
-  Future<void> init() async {
-    _logger.d("Init CurrentUser");
-    await _currentUser.init();
   }
 
   Future<List<Group>> getGroups() async {

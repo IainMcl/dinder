@@ -136,10 +136,8 @@ class Group {
 
   // Methods
 
-  Future<void> update() async {
+  Future<void> update(CurrentUser currentUser) async {
     lastUpdated = DateTime.now();
-    CurrentUser currentUser = CurrentUser();
-    await currentUser.init();
     lastUpdatedBy = currentUser.user.id;
     await FirebaseFirestore.instance
         .collection('groups')
@@ -150,26 +148,30 @@ class Group {
     _logger.d("Updated group $id");
   }
 
-  void addMember(String uid) {
+  void addMember(String uid, CurrentUser currentUser) {
     _logger.d("Adding member $uid to group $id");
     members.add(uid);
-    update();
+    update(currentUser);
     _logger.d("Added member $uid to group $id");
   }
 
-  void removeMember(String uid) {
+  void removeMember(String uid, CurrentUser currentUser) {
     _logger.d("Removing member $uid from group $id");
     members.remove(uid);
-    update();
+    // If the user is an admin, remove them from the admins list
+    if (admins.contains(uid)) {
+      admins.remove(uid);
+    }
+    update(currentUser);
     _logger.d("Removed member $uid from group $id");
   }
 
-  void addAdmin(String uid) {
+  void addAdmin(String uid, CurrentUser currentUser) {
     _logger.d("Adding admin $uid to group $id");
     CurrentUser currentUser = CurrentUser();
     if (admins.contains(currentUser.uid)) {
       admins.add(uid);
-      update();
+      update(currentUser);
       _logger.d("Added admin $uid to group $id");
     } else {
       _logger.e(
@@ -177,12 +179,12 @@ class Group {
     }
   }
 
-  void removeAdmin(String uid) {
+  void removeAdmin(String uid, CurrentUser currentUser) {
     _logger.d("Removing admin $uid from group $id");
     CurrentUser currentUser = CurrentUser();
     if (admins.contains(currentUser.uid)) {
       admins.remove(uid);
-      update();
+      update(currentUser);
       _logger.d("Removed admin $uid from group $id");
     } else {
       _logger.e(
@@ -190,7 +192,7 @@ class Group {
     }
   }
 
-  void addMealLike(String mealId, String userId) {
+  void addMealLike(String mealId, String userId, CurrentUser currentUser) {
     _logger.d("Adding like for meal $mealId");
     mealLikes ??= [
       MealLikes(mealId: mealId, userIds: [userId])
@@ -203,7 +205,7 @@ class Group {
         return MealLikes(mealId: mealId, userIds: [userId]);
       },
     ).addLike(userId);
-    update();
+    update(currentUser);
   }
 
   Future<void> delete() async {
@@ -267,11 +269,11 @@ class Group {
     return null;
   }
 
-  void resetGroupMeal() {
+  void resetGroupMeal(CurrentUser currentUser) {
     _logger.d("Resetting group meal for group $id");
     mealDate = null;
     mealLikes = null;
-    update();
+    update(currentUser);
     _logger.d("Reset group meal for group $id");
   }
 }
