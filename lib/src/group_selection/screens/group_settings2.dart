@@ -1,11 +1,13 @@
 import 'package:dinder/src/group_selection/models/group.dart';
 import 'package:dinder/src/group_selection/widgets/member_list_item.dart';
+import 'package:dinder/src/selection/screens/selection.dart';
 import 'package:dinder/src/shared/widgets/confirmation_dialog.dart';
 import 'package:dinder/src/user/models/current_user.dart';
 import 'package:dinder/src/user/models/user.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
@@ -41,7 +43,9 @@ class _EditGroupPageState extends State<EditGroupPage> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          widget.group.name ?? "Group Name",
+          _groupNameController.text == ""
+              ? widget.group.name ?? ""
+              : _groupNameController.text,
           style: const TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
@@ -241,6 +245,23 @@ class _EditGroupPageState extends State<EditGroupPage> {
               ),
             ),
             const SizedBox(height: 8.0),
+            TextButton(
+                onPressed: () {
+                  DatePicker.showDateTimePicker(context,
+                      showTitleActions: true,
+                      minTime: DateTime.now(),
+                      maxTime: DateTime.now().add(const Duration(days: 100)),
+                      onChanged: (date) {
+                    print('change $date');
+                  }, onConfirm: (date) {
+                    print('confirm $date');
+                    widget.group.mealDate = date;
+                  }, currentTime: DateTime.now(), locale: LocaleType.en);
+                },
+                child: const Text(
+                  'show date time picker',
+                  style: TextStyle(color: Colors.blue),
+                )),
             TextField(
               controller: _mealDateController,
               decoration: InputDecoration(
@@ -271,7 +292,17 @@ class _EditGroupPageState extends State<EditGroupPage> {
                 ElevatedButton(
                   child: const Text('Continue'),
                   onPressed: () {
-                    // Perform action on continue button press
+                    widget.group.name = _groupNameController.text;
+                    // widget.group.mealDate = _mealDateController.text;
+                    widget.group.update(currentUser);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Selection(
+                          group: widget.group,
+                        ),
+                      ),
+                    );
                   },
                 ),
               ],

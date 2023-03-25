@@ -79,7 +79,7 @@ class _SelectionState extends State<Selection> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Swipeable Card Stack"),
+        title: Text(widget.group.name ?? "Meal selection"),
         actions: [
           ThreeDotsMenu(),
         ],
