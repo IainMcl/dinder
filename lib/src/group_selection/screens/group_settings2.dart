@@ -1,5 +1,6 @@
 import 'package:dinder/src/group_selection/models/group.dart';
 import 'package:dinder/src/group_selection/widgets/member_list_item.dart';
+import 'package:dinder/src/shared/widgets/confirmation_dialog.dart';
 import 'package:dinder/src/user/models/current_user.dart';
 import 'package:dinder/src/user/models/user.dart';
 
@@ -160,7 +161,8 @@ class _EditGroupPageState extends State<EditGroupPage> {
               FutureBuilder(
                 future: User.getUsers(widget.group.members),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.hasData) {
+                  if (snapshot.hasData &&
+                      snapshot.data.length == widget.group.members.length) {
                     return ListView.builder(
                       shrinkWrap: true,
                       itemCount: snapshot.data.length,
@@ -172,6 +174,55 @@ class _EditGroupPageState extends State<EditGroupPage> {
                               .contains(snapshot.data[index].id),
                         );
                       },
+                    );
+                  } else if (snapshot.hasData &&
+                      snapshot.data.length != widget.group.members.length &&
+                      widget.group.members.contains(currentUser.uid)) {
+                    return Column(
+                      children: [
+                        ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return MemberListItem(
+                              group: widget.group,
+                              user: snapshot.data[index],
+                              isAdmin: widget.group.admins
+                                  .contains(snapshot.data[index].id),
+                            );
+                          },
+                        ),
+                        TextButton(
+                          child: const Text("Missing members"),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => ConfirmationDialog(
+                                  title: "Missing members",
+                                  message:
+                                      "An error has ocurred causing some members to not be displayed. Do you want to remove missing (${widget.group.members.length - snapshot.data.length}) users from the group?",
+                                  onConfirm: () {
+                                    var missingMembers = widget.group.members
+                                        .where((member) => !snapshot.data
+                                            .map((user) => user.id)
+                                            .contains(member))
+                                        .toList();
+                                    for (var member in missingMembers) {
+                                      widget.group
+                                          .removeMember(member, currentUser);
+                                    }
+                                    setState(() {
+                                      _isExpanded = false;
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                  onCancel: () {
+                                    Navigator.pop(context);
+                                  }),
+                            );
+                          },
+                        )
+                      ],
                     );
                   } else {
                     return const Center(

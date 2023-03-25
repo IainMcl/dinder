@@ -15,10 +15,10 @@ class GroupSelectionHome extends StatefulWidget {
 }
 
 class _GroupSelectionHomeState extends State<GroupSelectionHome> {
+  final Logger _logger = Logger();
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<CurrentUser>(context);
-    final Logger _logger = Logger();
     final GroupSelectionService _groupSelectionService =
         GroupSelectionService(currentUser);
 
@@ -92,7 +92,8 @@ class _GroupSelectionHomeState extends State<GroupSelectionHome> {
                       ),
                     ),
                   );
-                } else if (snapshot.hasData && snapshot.data!.isEmpty) {
+                } else if (!snapshot.hasData && !snapshot.hasError) {
+                  // TODO: this is not working
                   return const Center(
                     child: Text('Create a new group or join an existing one'),
                   );

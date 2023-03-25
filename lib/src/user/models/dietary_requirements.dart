@@ -52,26 +52,25 @@ class DietaryRequirements {
     );
   }
 
-  factory DietaryRequirements.fromDocument(DocumentSnapshot? doc) {
+  factory DietaryRequirements.fromDocument(Map<String, dynamic>? doc) {
     if (doc == null) {
       return DietaryRequirements();
     }
     return DietaryRequirements(
-      vegetarian: doc.get("vegetarian"),
-      vegan: doc.get("vegan"),
-      glutenFree: doc.get("glutenFree"),
-      dairyFree: doc.get("dairyFree"),
-      nutFree: doc.get("nutFree"),
-      shellfishFree: doc.get("shellfishFree"),
-      eggFree: doc.get("eggFree"),
-      fishFree: doc.get("fishFree"),
-      soyFree: doc.get("soyFree"),
-      porkFree: doc.get("porkFree"),
-      beefFree: doc.get("beefFree"),
-      halal: doc.get("halal"),
-      pescatarian: doc.get("pescatarian"),
-      kosher: doc.get("kosher"),
-    );
+        vegetarian: doc["vegetarian"],
+        vegan: doc["vegan"],
+        glutenFree: doc["glutenFree"],
+        dairyFree: doc["dairyFree"],
+        nutFree: doc["nutFree"],
+        shellfishFree: doc["shellfishFree"],
+        eggFree: doc["eggFree"],
+        fishFree: doc["fishFree"],
+        soyFree: doc["soyFree"],
+        porkFree: doc["porkFree"],
+        beefFree: doc["beefFree"],
+        halal: doc["halal"],
+        pescatarian: doc["pescatarian"],
+        kosher: doc["kosher"]);
   }
 
   Map<String, dynamic> toMap() {

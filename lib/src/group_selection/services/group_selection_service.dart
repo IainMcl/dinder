@@ -21,7 +21,10 @@ class GroupSelectionService {
     _logger.d("Get Groups");
     // get the groups from the firestore database where the group uid is in the current user's groups
     var userGroups = _currentUser.groups;
-    final querySnapshot = await _groupsCollection.get();
+    // Get groups where the document id is in userGroups
+    final querySnapshot = await _groupsCollection
+        .where(FieldPath.documentId, whereIn: userGroups)
+        .get();
 
     final documents = querySnapshot.docs;
 
@@ -69,6 +72,8 @@ class GroupSelectionService {
         'members': FieldValue.arrayUnion([_currentUser.uid]),
       });
       _logger.d("Group members updated with current user $_currentUser.uid");
+      _currentUser.addGroup(group.docs.first.id);
+      _logger.d("Group added to user groups");
       return Group.fromMap(group.docs.first.data() as Map<String, dynamic>);
     } else {
       _logger.e("Group with join code {$joinCode} does not exist");

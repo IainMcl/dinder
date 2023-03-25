@@ -19,7 +19,7 @@ class GroupSettings extends StatefulWidget {
 }
 
 class _GroupSettingsState extends State<GroupSettings> {
-  Logger _logger = Logger();
+  final Logger _logger = Logger();
   final TextEditingController _groupTitleController =
       TextEditingController(text: "Enter group name");
 
