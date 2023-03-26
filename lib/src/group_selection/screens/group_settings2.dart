@@ -1,4 +1,5 @@
 import 'package:dinder/src/group_selection/models/group.dart';
+import 'package:intl/intl.dart';
 import 'package:dinder/src/group_selection/widgets/member_list_item.dart';
 import 'package:dinder/src/selection/screens/selection.dart';
 import 'package:dinder/src/shared/widgets/confirmation_dialog.dart';
@@ -23,7 +24,6 @@ class EditGroupPage extends StatefulWidget {
 class _EditGroupPageState extends State<EditGroupPage> {
   final Logger _logger = Logger();
   final TextEditingController _groupNameController = TextEditingController();
-  final TextEditingController _mealDateController = TextEditingController();
 
   bool _isExpanded = false;
   int getNumberOfMembers() {
@@ -245,34 +245,35 @@ class _EditGroupPageState extends State<EditGroupPage> {
               ),
             ),
             const SizedBox(height: 8.0),
-            TextButton(
-                onPressed: () {
-                  DatePicker.showDateTimePicker(context,
-                      showTitleActions: true,
-                      minTime: DateTime.now(),
-                      maxTime: DateTime.now().add(const Duration(days: 100)),
-                      onChanged: (date) {
-                    print('change $date');
-                  }, onConfirm: (date) {
-                    print('confirm $date');
-                    widget.group.mealDate = date;
-                  }, currentTime: DateTime.now(), locale: LocaleType.en);
-                },
-                child: const Text(
-                  'show date time picker',
-                  style: TextStyle(color: Colors.blue),
-                )),
-            TextField(
-              controller: _mealDateController,
-              decoration: InputDecoration(
-                hintText: 'Enter meal date',
-                filled: true,
-                fillColor: Colors.grey[200],
-                border: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(10.0),
               ),
+              child: TextButton(
+                  onPressed: () {
+                    DatePicker.showDateTimePicker(context,
+                        showTitleActions: true,
+                        minTime: DateTime.now(),
+                        maxTime: DateTime.now().add(const Duration(days: 100)),
+                        onChanged: (date) {
+                      setState() {
+                        widget.group.mealDate = date;
+                      }
+
+                      _logger.d("Date changed to: $date");
+                    }, onConfirm: (date) {
+                      _logger.d("Selected date: $date");
+                      widget.group.mealDate = date;
+                      widget.group.update(currentUser);
+                    }, currentTime: DateTime.now(), locale: LocaleType.en);
+                  },
+                  child: Text(
+                    widget.group.mealDate == null
+                        ? 'Select meal date'
+                        : DateFormat('EEEE d MMMM HH:mm')
+                            .format(widget.group.mealDate!),
+                  )),
             ),
             const SizedBox(height: 32.0),
             Row(
