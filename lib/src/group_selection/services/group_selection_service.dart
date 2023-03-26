@@ -4,11 +4,9 @@ import 'package:dinder/src/group_selection/models/group.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dinder/src/user/models/current_user.dart';
 import 'package:logger/logger.dart';
-import 'package:uuid/uuid.dart';
-import 'package:uuid/uuid_util.dart';
 
 class GroupSelectionService {
-  Logger _logger = Logger();
+  final Logger _logger = Logger();
   late final CollectionReference _groupsCollection;
   late final CurrentUser _currentUser;
 

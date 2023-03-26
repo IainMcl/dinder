@@ -3,7 +3,6 @@ import 'dart:typed_data';
 import 'package:dinder/src/auth/models/file_model.dart';
 import 'package:dinder/src/auth/services/flow_controller.dart';
 import 'package:dinder/src/auth/services/sign_up_controller.dart';
-import 'package:dinder/src/selection/screens/selection.dart';
 import 'package:dinder/src/shared/widgets/button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -215,7 +214,7 @@ class _SignUpThreeState extends State<SignUpThree> {
                     onPressed: () async {
                       uploadImageFile();
                       setState(() {
-                        int i = 1 + 1;
+                        // int i = 1 + 1;
                       });
                     },
                     child: const Text("Upload an image"),

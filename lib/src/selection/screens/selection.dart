@@ -12,23 +12,23 @@ import 'package:provider/provider.dart';
 import 'package:swipeable_card_stack/swipeable_card_stack.dart';
 
 class Selection extends StatefulWidget {
-  Selection({Key? key, required this.group}) : super(key: key);
-  Group group;
+  const Selection({Key? key, required this.group}) : super(key: key);
+  final Group group;
 
   @override
   _SelectionState createState() => _SelectionState();
 }
 
 class _SelectionState extends State<Selection> {
+  final Logger _logger = Logger();
+  //create a SwipeableCardSectionController
+  final SwipeableCardSectionController _cardController =
+      SwipeableCardSectionController();
+  late SelectionService _selectionService;
+
   @override
   Widget build(BuildContext context) {
     CurrentUser currentUser = Provider.of<CurrentUser>(context);
-    final Logger _logger = Logger();
-    //create a SwipeableCardSectionController
-    final SwipeableCardSectionController _cardController =
-        SwipeableCardSectionController();
-
-    late SelectionService _selectionService;
 
     List<Meal> meals = [];
 

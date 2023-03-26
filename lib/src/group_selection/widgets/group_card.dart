@@ -44,9 +44,9 @@ class GroupCard extends StatelessWidget {
                   // Number of members
                   Text(group.members.length.toString()),
                   if (group.admins.contains(currentUserId))
-                    Text('You are an admin of this group')
+                    const Text('You are an admin of this group')
                   else
-                    Text('You are not an admin of this group')
+                    const Text('You are not an admin of this group')
                 ],
               ),
             ),

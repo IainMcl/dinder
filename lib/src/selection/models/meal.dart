@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dinder/src/group_selection/models/meal_likes.dart';
 import 'package:dinder/src/selection/models/ingredient.dart';
 import 'package:logger/logger.dart';
 

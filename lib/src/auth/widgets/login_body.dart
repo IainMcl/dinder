@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:logger/logger.dart';
 
 class LoginBodyScreen extends StatefulWidget {
   const LoginBodyScreen({super.key});
@@ -16,6 +17,7 @@ class LoginBodyScreen extends StatefulWidget {
 }
 
 class _LoginBodyScreenState extends State<LoginBodyScreen> {
+  final Logger _logger = Logger();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -32,7 +34,7 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
       var ret = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
       Navigator.pop(context);
-      print('User signed in: ${ret.user!.uid}');
+      _logger.i('User signed in: ${ret.user!.uid}');
     } on FirebaseAuthException catch (error) {
       Navigator.pop(context);
       switch (error.code) {
@@ -46,10 +48,10 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
         default:
           showErrorMessage("Something went wrong");
       }
-      print('Sign-in failed: ${error.code}');
+      _logger.i('Sign-in failed: ${error.code}');
     } catch (error) {
       showErrorMessage("Something went wrong");
-      print('Sign-in failed: $error');
+      _logger.w('Sign-in failed: $error');
     }
   }
 

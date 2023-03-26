@@ -10,6 +10,8 @@ import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class GroupSelectionHome extends StatefulWidget {
+  const GroupSelectionHome({super.key});
+
   @override
   _GroupSelectionHomeState createState() => _GroupSelectionHomeState();
 }

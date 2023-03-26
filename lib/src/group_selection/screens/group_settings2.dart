@@ -13,9 +13,9 @@ import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class EditGroupPage extends StatefulWidget {
-  Group group;
+  final Group group;
 
-  EditGroupPage({Key? key, required this.group}) : super(key: key);
+  const EditGroupPage({Key? key, required this.group}) : super(key: key);
 
   @override
   _EditGroupPageState createState() => _EditGroupPageState();

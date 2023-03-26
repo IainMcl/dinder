@@ -5,14 +5,13 @@ import 'package:dinder/src/shared/widgets/edit_success.dart';
 import 'package:dinder/src/shared/widgets/three_dots_menu.dart';
 import 'package:dinder/src/user/models/current_user.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class GroupSettings extends StatefulWidget {
-  Group group;
+  final Group group;
 
-  GroupSettings({Key? key, required this.group}) : super(key: key);
+  const GroupSettings({Key? key, required this.group}) : super(key: key);
 
   @override
   _GroupSettingsState createState() => _GroupSettingsState();
@@ -79,7 +78,7 @@ class _GroupSettingsState extends State<GroupSettings> {
                 )),
           ],
         ),
-        actions: [ThreeDotsMenu()],
+        actions: const [ThreeDotsMenu()],
       ),
       body: Center(
         child: Column(

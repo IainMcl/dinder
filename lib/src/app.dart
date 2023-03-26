@@ -2,7 +2,7 @@ import 'package:dinder/src/auth/screens/auth_page.dart';
 import 'package:dinder/src/auth/screens/login.dart';
 import 'package:dinder/src/auth/screens/sign_up.dart';
 import 'package:dinder/src/group_selection/screens/group_selection_home.dart';
-import 'package:dinder/src/selection/screens/selection.dart';
+import 'package:dinder/src/settings/settings_controller.dart';
 import 'package:dinder/src/user/models/current_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -10,15 +10,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
-import 'group_selection/screens/group_settings2.dart';
-import 'sample_feature/sample_item_details_view.dart';
-import 'sample_feature/sample_item_list_view.dart';
-import 'settings/settings_controller.dart';
-import 'settings/settings_view.dart';
-
 /// The Widget that configures your application.
 class Dinder extends StatelessWidget {
-  Logger _logger = Logger();
+  final Logger _logger = Logger();
 
   Dinder({
     super.key,

@@ -8,9 +8,9 @@ import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class MemberListItem extends StatelessWidget {
-  User user;
-  bool isAdmin;
-  Group group;
+  final User user;
+  final bool isAdmin;
+  final Group group;
   MemberListItem({
     Key? key,
     required this.user,
@@ -90,7 +90,7 @@ class MemberListItem extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          GroupSelectionHome()),
+                                          const GroupSelectionHome()),
                                   (route) => false);
                               return;
                             }

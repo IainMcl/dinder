@@ -62,16 +62,20 @@ class Group {
   static Group fromMap(Map<String, dynamic> map) {
     var members = List<String>.from(map['members']);
     var admins = List<String>.from(map['admins']);
-    var mealLikes;
+    List<MealLikes> mealLikes;
     if (map['mealLikes'] != null) {
       mealLikes = List<MealLikes>.from(
           map['mealLikes'].map((x) => MealLikes.fromMap(x)));
+    } else {
+      mealLikes = [];
     }
     var created = (map['created'] as Timestamp).toDate();
     var lastUpdated = (map['lastUpdated'] as Timestamp).toDate();
-    var mealDate;
+    DateTime mealDate;
     if (map['mealDate'] != null) {
       mealDate = (map['mealDate'] as Timestamp).toDate();
+    } else {
+      mealDate = DateTime.now();
     }
 
     return Group(

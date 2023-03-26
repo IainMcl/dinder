@@ -1,7 +1,7 @@
 import 'package:logger/logger.dart';
 
 class MealLikes {
-  Logger _logger = Logger();
+  final Logger _logger = Logger();
   final String mealId;
   final List<String>? userIds;
   MealLikes({

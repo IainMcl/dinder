@@ -1,16 +1,18 @@
 import 'package:dinder/src/user/models/user.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 
 class MembersDropdown extends StatefulWidget {
   final List<String> memberIds;
 
-  MembersDropdown({required this.memberIds});
+  const MembersDropdown({super.key, required this.memberIds});
 
   @override
   _MembersDropdownState createState() => _MembersDropdownState();
 }
 
 class _MembersDropdownState extends State<MembersDropdown> {
+  final Logger _logger = Logger();
   Future<List<User>> _getUsers() async {
     List<User> users = [];
     for (String id in widget.memberIds) {
@@ -35,7 +37,7 @@ class _MembersDropdownState extends State<MembersDropdown> {
                         ))
                 .toList(),
             onChanged: (String? value) {
-              print(value);
+              _logger.d(value);
             },
           );
         } else {
