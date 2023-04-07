@@ -25,20 +25,32 @@ class _SelectionState extends State<Selection> {
   final SwipeableCardSectionController _cardController =
       SwipeableCardSectionController();
   late SelectionService _selectionService;
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void listenToMatchStream() {
+    _selectionService.group.mealMatchStream.listen((match) {
+      _logger.d("Matched meal: ${match.title}");
+      // Show match modal with the matched meal
+      MatchModal(meal: match);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     CurrentUser currentUser = Provider.of<CurrentUser>(context);
+    _selectionService = SelectionService(widget.group, currentUser);
+    _selectionService.group.checkForMatches();
+    listenToMatchStream();
 
     List<Meal> meals = [];
-
-    void listenToMatchStream() {
-      _selectionService.group.mealMatchStream.listen((match) {
-        _logger.d("Matched meal: ${match.title}");
-        // Show match modal with the matched meal
-        MatchModal(meal: match);
-      });
-    }
 
     final Meal _emptyMeal = Meal(
       title: "No more meals",
@@ -50,19 +62,6 @@ class _SelectionState extends State<Selection> {
       servings: 0,
       instructions: List<String>.empty(),
     );
-
-    @override
-    void initState() {
-      super.initState();
-      _selectionService = SelectionService(widget.group, currentUser);
-      _selectionService.group.checkForMatches();
-      listenToMatchStream();
-    }
-
-    @override
-    void dispose() {
-      super.dispose();
-    }
 
     Future<List<Meal>> getNextMeals(int i) async {
       List<Meal> newMeals = await _selectionService.getMeals(i);

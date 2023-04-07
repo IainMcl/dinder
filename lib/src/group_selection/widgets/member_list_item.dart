@@ -23,6 +23,8 @@ class MemberListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CurrentUser currentUser = Provider.of<CurrentUser>(context);
+    final bool currentUserIsGroupAdmin = group.admins.contains(currentUser.uid);
+    final bool currentUserIsUser = currentUser.uid == user.id;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -32,26 +34,32 @@ class MemberListItem extends StatelessWidget {
               text: user.name ?? user.email!,
               style: TextStyle(
                 color: Colors.black,
-                fontWeight: currentUser.uid == user.id
-                    ? FontWeight.bold
-                    : FontWeight.normal,
+                fontWeight:
+                    currentUserIsUser ? FontWeight.bold : FontWeight.normal,
               ),
-              children: <TextSpan>[
-                if (group.admins.contains(currentUser.uid))
-                  const TextSpan(
-                    text: ' (admin)',
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontWeight: FontWeight.normal,
-                      fontSize: 12,
-                    ),
+              children: const <TextSpan>[
+                // if (currentUserIsGroupAdmin)
+                TextSpan(
+                  text: ' (admin)',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontWeight: FontWeight.normal,
+                    fontSize: 12,
                   ),
+                ),
               ],
             ),
           ),
           const Spacer(),
-          if (group.admins.contains(currentUser.uid) ||
-              user.id == currentUser.uid)
+          // if (currentUserIsGroupAdmin || currentUserIsUser)
+          //   Container(
+          //     color: Colors.red,
+          //     child: IconButton(
+          //       onPressed: () {},
+          //       icon: const Icon(Icons.edit, size: 18),
+          //     ),
+          //   ),
+          if (currentUserIsGroupAdmin || currentUserIsUser)
             IconButton(
               onPressed: () {
                 String title;

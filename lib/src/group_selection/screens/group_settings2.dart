@@ -33,26 +33,32 @@ class _EditGroupPageState extends State<EditGroupPage> {
   @override
   Widget build(BuildContext context) {
     CurrentUser currentUser = Provider.of<CurrentUser>(context);
+    final bool currentUserIsGroupAdmin =
+        widget.group.admins.contains(currentUser.uid);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          _groupNameController.text == ""
-              ? widget.group.name ?? ""
-              : _groupNameController.text,
-          style: const TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios),
+            onPressed: () => Navigator.pop(context),
           ),
-        ),
-        centerTitle: true,
-      ),
+          title: Text(
+            _groupNameController.text == ""
+                ? (widget.group.name == "" ? "Group name" : widget.group.name!)
+                : _groupNameController.text,
+            style: const TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          centerTitle: true,
+          actions: [
+            if (currentUserIsGroupAdmin)
+              IconButton(
+                  onPressed: () {}, icon: const Icon(Icons.settings, size: 18))
+          ]),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -253,20 +259,19 @@ class _EditGroupPageState extends State<EditGroupPage> {
               child: TextButton(
                   onPressed: () {
                     DatePicker.showDateTimePicker(context,
+                        currentTime: widget.group.mealDate ?? DateTime.now(),
                         showTitleActions: true,
                         minTime: DateTime.now(),
                         maxTime: DateTime.now().add(const Duration(days: 100)),
                         onChanged: (date) {
-                      setState() {
-                        widget.group.mealDate = date;
-                      }
-
                       _logger.d("Date changed to: $date");
+                      widget.group.mealDate = date;
                     }, onConfirm: (date) {
-                      _logger.d("Selected date: $date");
+                      _logger.d("Date changed to: $date");
+
                       widget.group.mealDate = date;
                       widget.group.update(currentUser);
-                    }, currentTime: DateTime.now(), locale: LocaleType.en);
+                    }, locale: LocaleType.en);
                   },
                   child: Text(
                     widget.group.mealDate == null
