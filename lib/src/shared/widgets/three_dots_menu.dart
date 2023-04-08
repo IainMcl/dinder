@@ -1,3 +1,4 @@
+import 'package:dinder/src/auth/screens/login.dart';
 import 'package:dinder/src/user/screens/profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,10 @@ class ThreeDotsMenu extends StatelessWidget {
         PopupMenuItem(
           // Firebase sign out
           onTap: () {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const Login()),
+                (route) => false);
             FirebaseAuth.instance.signOut();
           },
           child: Row(children: const [
