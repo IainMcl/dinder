@@ -7,15 +7,15 @@ import 'package:dinder/src/selection/widgets/icon_number.dart';
 import 'package:flutter/material.dart';
 import 'package:flip_card/flip_card.dart';
 
-class MealView extends StatefulWidget {
+class MealCardView extends StatefulWidget {
   final Meal card;
-  MealView({required this.card});
+  MealCardView({required this.card});
 
   @override
-  _MealViewState createState() => _MealViewState();
+  _MealCardViewState createState() => _MealCardViewState();
 }
 
-class _MealViewState extends State<MealView> {
+class _MealCardViewState extends State<MealCardView> {
   Alignment getGradientAlignment() {
     // Random Aligmnent
     var random = new Random();

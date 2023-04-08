@@ -19,7 +19,7 @@ class Group {
   DateTime? mealDate;
   List<MealLikes>? mealLikes; // Meal ID, User ID
 
-  late String _id;
+  late String id;
 
   Group({
     required this.joinCode,
@@ -113,7 +113,6 @@ class Group {
   }
 
   // Getters
-  String get id => _id;
   String get getJoinCode => joinCode;
   String get getName => name ?? '';
   List<String> get getMembers => members;
@@ -125,9 +124,6 @@ class Group {
   List<MealLikes>? get getMealLikes => mealLikes;
 
   // Setters
-  set id(String id) {
-    _id = id;
-  }
 
   set setName(String name) => this.name = name;
   set setMembers(List<String> members) => this.members = members;
@@ -145,7 +141,7 @@ class Group {
     lastUpdatedBy = currentUser.user.id;
     await FirebaseFirestore.instance
         .collection('groups')
-        .doc(_id)
+        .doc(id)
         .update(toMap())
         .onError((error, stackTrace) =>
             {_logger.e("Error updating group: $error : $stackTrace")});
@@ -220,7 +216,7 @@ class Group {
     if (admins.contains(currentUser.uid)) {
       FirebaseFirestore.instance
           .collection('groups')
-          .doc(_id)
+          .doc(id)
           .delete()
           .catchError((error) {
         _logger.e("Error deleting group $id: $error");
@@ -229,17 +225,17 @@ class Group {
     } else {
       // Raise error that the current user is not an admin
       _logger
-          .e("Current user (${currentUser.uid}) is not an admin of group $_id");
+          .e("Current user (${currentUser.uid}) is not an admin of group $id");
       throw Exception(
-          'Current user (${currentUser.uid}) is not an admin of group ($_id)');
+          'Current user (${currentUser.uid}) is not an admin of group ($id)');
     }
   }
 
   Future<Meal?> checkForMatches() async {
-    _logger.i('Checking for matches in group $_id');
+    _logger.i('Checking for matches in group $id');
     // Get the most recent group document
     var groupCollection = FirebaseFirestore.instance.collection('groups');
-    var groupDoc = await groupCollection.doc(_id).get();
+    var groupDoc = await groupCollection.doc(id).get();
 
     if (!groupDoc.exists) return null;
 

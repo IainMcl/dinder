@@ -86,7 +86,7 @@ class Meal {
         // Only get meals who's id is not in the user's liked meals
         .where(
           FieldPath.documentId,
-          whereNotIn: userLikedMeals,
+          // whereNotIn: userLikedMeals,
         )
         .get()
         .catchError((e) => {
@@ -94,6 +94,12 @@ class Meal {
             });
 
     meals = mealDocs.docs.map((e) => Meal.fromDocument(e)).toList();
+
+    // TODO: Remove this when we have more meals
+    // Repeat the meals to make sure we have enough 100 times
+    meals = List.generate(100, (index) => meals)
+        .expand((element) => element)
+        .toList();
     return meals;
   }
 }

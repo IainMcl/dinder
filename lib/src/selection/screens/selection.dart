@@ -32,27 +32,32 @@ class _SelectionState extends State<Selection> {
 
   @override
   void dispose() {
+    // TODO: Dispose od meal match stream
     super.dispose();
-  }
-
-  void listenToMatchStream() {
-    _selectionService.group.mealMatchStream.listen((match) {
-      _logger.d("Matched meal: ${match.title}");
-      // Show match modal with the matched meal
-      MatchModal(meal: match);
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     CurrentUser currentUser = Provider.of<CurrentUser>(context);
+    final bool currentUserIsGroupAdmin =
+        widget.group.admins.contains(currentUser.uid);
     _selectionService = SelectionService(widget.group, currentUser);
     _selectionService.group.checkForMatches();
+    void listenToMatchStream() {
+      _selectionService.group.mealMatchStream.listen((match) {
+        _logger.d("Matched meal: ${match.title}");
+        // Show match modal with the matched meal
+
+        showDialog(
+            context: context, builder: (context) => MatchModal(meal: match));
+      });
+    }
+
     listenToMatchStream();
 
     List<Meal> meals = [];
 
-    final Meal _emptyMeal = Meal(
+    final Meal emptyMeal = Meal(
       title: "No more meals",
       description: "No more meals",
       image: "No more meals",
@@ -66,7 +71,7 @@ class _SelectionState extends State<Selection> {
     Future<List<Meal>> getNextMeals(int i) async {
       List<Meal> newMeals = await _selectionService.getMeals(i);
       if (newMeals.isEmpty) {
-        newMeals.add(_emptyMeal);
+        newMeals.add(emptyMeal);
       }
       meals.addAll(newMeals);
       return Future.value(newMeals);
@@ -80,7 +85,7 @@ class _SelectionState extends State<Selection> {
       appBar: AppBar(
         title: Text(widget.group.name ?? "Meal selection"),
         actions: [
-          ThreeDotsMenu(),
+          const ThreeDotsMenu(),
         ],
       ),
       body: Column(
@@ -101,24 +106,24 @@ class _SelectionState extends State<Selection> {
                   cardHeightBottomMul: 0.60,
                   //add the first 3 cards (widgets)
                   items: () {
-                    List<MealView> mealViews = [];
+                    List<MealCardView> MealCardViews = [];
                     if (meals.length < 3) {
                       for (var meal in meals) {
-                        mealViews.add(MealView(
+                        MealCardViews.add(MealCardView(
                           card: meal,
                         ));
                       }
                       if (meals.isEmpty) {
-                        mealViews.add(MealView(card: _emptyMeal));
+                        MealCardViews.add(MealCardView(card: emptyMeal));
                       }
-                      return mealViews;
+                      return MealCardViews;
                     }
                     for (int i = 0; i < 3; i++) {
-                      mealViews.add(MealView(
+                      MealCardViews.add(MealCardView(
                         card: meals[i],
                       ));
                     }
-                    return mealViews;
+                    return MealCardViews;
                   }(),
 
                   //Get card swipe event callbacks
@@ -129,11 +134,11 @@ class _SelectionState extends State<Selection> {
                     getNextMeals(1);
                     // If there are no more meals, add the empty meal
                     if (meals.isEmpty) {
-                      meals.add(_emptyMeal);
+                      meals.add(emptyMeal);
                     } else {
                       _cardController.addItem(
                         // Get the next card from the list
-                        MealView(
+                        MealCardView(
                           card: meals.last,
                         ),
                       );

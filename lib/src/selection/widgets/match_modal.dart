@@ -1,13 +1,32 @@
+import 'package:dinder/src/meal/screens/meal_view.dart';
 import 'package:dinder/src/selection/models/meal.dart';
 import 'package:flutter/material.dart';
 
 class MatchModal extends StatelessWidget {
-  late Meal meal;
-  MatchModal({Key? key, required Meal meal}) : super(key: key);
+  const MatchModal({Key? key, required this.meal}) : super(key: key);
+  final Meal meal;
+
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      child: Text("Match Modal with ${meal.title}"),
+    return AlertDialog(
+      title: Text("Matched meal"),
+      content: Text(meal.title),
+      actions: [
+        TextButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MealView(meal: meal)));
+            },
+            child: Text("View match")),
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: Text("Close"),
+        ),
+      ],
     );
   }
 }

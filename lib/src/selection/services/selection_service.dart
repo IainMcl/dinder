@@ -24,7 +24,7 @@ class SelectionService {
     meals.shuffle();
   }
 
-  void handleSwipe(Direction dir, MealView card) {
+  void handleSwipe(Direction dir, MealCardView card) {
     group.checkForMatches();
     switch (dir) {
       case Direction.left:
