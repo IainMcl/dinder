@@ -1,0 +1,3 @@
+[submodule "GoGraphql"]
+	path = GoGraphql
+	url = https://github.com/IainMcl/GoGraphql.git
