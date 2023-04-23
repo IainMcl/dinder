@@ -9,7 +9,7 @@ class MatchModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text("Matched meal"),
+      title: const Text("Matched meal"),
       content: Text(meal.title),
       actions: [
         TextButton(
@@ -19,12 +19,12 @@ class MatchModal extends StatelessWidget {
                   MaterialPageRoute(
                       builder: (context) => MealView(meal: meal)));
             },
-            child: Text("View match")),
+            child: const Text("View match")),
         TextButton(
           onPressed: () {
             Navigator.pop(context);
           },
-          child: Text("Close"),
+          child: const Text("Close"),
         ),
       ],
     );

@@ -24,7 +24,7 @@ class Group {
   Group({
     required this.joinCode,
     this.name,
-    required this.members,
+    required this.members         ,
     required this.admins,
     required this.created,
     required this.lastUpdated,

@@ -67,8 +67,7 @@ class MemberListItem extends StatelessWidget {
                 if (group.members.length == 1) {
                   title = "Delete group";
                   message = "Are you sure you want to delete this group?";
-                } // TODO: If current user is the user
-                else if (currentUser.uid == user.id) {
+                } else if (currentUserIsUser) {
                   title = "Leave group";
                   message = "Are you sure you want to leave this group?";
                 } else {

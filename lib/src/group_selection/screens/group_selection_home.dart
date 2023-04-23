@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dinder/src/group_selection/models/group.dart';
 import 'package:dinder/src/group_selection/screens/group_settings.dart';
 import 'package:dinder/src/group_selection/services/group_selection_service.dart';
@@ -143,7 +145,13 @@ class _GroupSelectionHomeState extends State<GroupSelectionHome> {
                 child: const Text('Join Group'),
               ),
             ],
-          )
+          ),
+            Container(
+                        color: Colors.redAccent,                        
+                child: const Text(
+                            "View matches"
+                        ),
+                    )
         ],
       ),
     );

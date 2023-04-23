@@ -84,8 +84,8 @@ class _SelectionState extends State<Selection> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.group.name ?? "Meal selection"),
-        actions: [
-          const ThreeDotsMenu(),
+        actions: const [
+          ThreeDotsMenu(),
         ],
       ),
       body: Column(

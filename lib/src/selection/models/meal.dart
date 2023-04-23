@@ -97,9 +97,9 @@ class Meal {
 
     // TODO: Remove this when we have more meals
     // Repeat the meals to make sure we have enough 100 times
-    meals = List.generate(100, (index) => meals)
-        .expand((element) => element)
-        .toList();
+    // meals = List.generate(100, (index) => meals)
+    //     .expand((element) => element)
+    //     .toList();
     return meals;
   }
 }
