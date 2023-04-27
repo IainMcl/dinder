@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:dinder/src/group_selection/data/firebase_group_selection_data.dart';
+import 'package:dinder/src/group_selection/data/group_selection_data.dart';
 import 'package:dinder/src/group_selection/models/group.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dinder/src/user/models/current_user.dart';
@@ -7,35 +9,22 @@ import 'package:logger/logger.dart';
 
 class GroupSelectionService {
   final Logger _logger = Logger();
-  late final CollectionReference _groupsCollection;
   late final CurrentUser _currentUser;
+  GroupSelectionData _groupSelectionData = FirebaseGroupSelectionData();
 
   GroupSelectionService(CurrentUser user) {
     _currentUser = user;
-    _groupsCollection = FirebaseFirestore.instance.collection('groups');
   }
 
   Future<List<Group>> getGroups() async {
     _logger.d("Get Groups");
     // get the groups from the firestore database where the group uid is in the current user's groups
     var userGroups = _currentUser.groups;
-    // Get groups where the document id is in userGroups
-    final querySnapshot = await _groupsCollection
-        .where(FieldPath.documentId, whereIn: userGroups)
-        .get();
-
-    final documents = querySnapshot.docs;
-
-    _logger.d("${documents.length} documents retrieved");
-
-    // convert the groups to a list of Group objects
-    List<Group> groupObjs = [];
-    for (var document in documents) {
-      Group group = Group.fromMap(document.data() as Map<String, dynamic>);
-      group.id = document.id;
-      groupObjs.add(group);
+    if (userGroups == null) {
+      return [];
     }
-
+    // Get groups where the document id is in userGroups
+    List<Group> groupObjs = await _groupSelectionData.getGroups(userGroups);
     return groupObjs;
   }
 
@@ -52,37 +41,28 @@ class GroupSelectionService {
       lastUpdated: DateTime.now(),
       lastUpdatedBy: _currentUser.uid,
     );
-    DocumentReference groupId = await _groupsCollection.add(group.toMap());
-    _logger.d("Added group. Group ID: ${groupId.id}");
-    group.id = groupId.id;
+    group = await _groupSelectionData.createGroup(group);
     return group;
   }
 
   Future<Group> joinGroup(String joinCode) async {
     _logger.d("Joining group with join code: $joinCode");
     // get the group from the firestore database where the group join code is the same as the join code entered
-    var group =
-        await _groupsCollection.where('joinCode', isEqualTo: joinCode).get();
 
-    // if the group exists, add the current user to the group
-    if (group.docs.isNotEmpty) {
-      _groupsCollection.doc(group.docs.first.id).update({
-        'members': FieldValue.arrayUnion([_currentUser.uid]),
-      });
-      _logger.d("Group members updated with current user $_currentUser.uid");
-      _currentUser.addGroup(group.docs.first.id);
-      _logger.d("Group added to user groups");
-      return Group.fromMap(group.docs.first.data() as Map<String, dynamic>);
-    } else {
-      _logger.e("Group with join code {$joinCode} does not exist");
+    _logger.d("Group members updated with current user $_currentUser.uid");
+    Group? group =
+        await _groupSelectionData.joinGroup(joinCode, _currentUser.uid);
+    if (group == null) {
+      _logger.e("Croup with join cod $joinCode, does not exist");
       throw Exception('Group does not exist');
     }
+    _currentUser.addGroup(group.id);
+    _logger.e("Group with join code {$joinCode} does not exist");
+    return group;
   }
 
   void leaveGroup(String uid) {
-    _groupsCollection.doc(uid).update({
-      'members': FieldValue.arrayRemove([_currentUser.uid]),
-    });
+    _groupSelectionData.leaveGroup(uid, _currentUser.uid);
     _logger.d("Current user removed from group $uid");
   }
 
