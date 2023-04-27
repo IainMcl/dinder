@@ -3,14 +3,13 @@ import 'dart:math';
 import 'package:dinder/src/group_selection/data/firebase_group_selection_data.dart';
 import 'package:dinder/src/group_selection/data/group_selection_data.dart';
 import 'package:dinder/src/group_selection/models/group.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dinder/src/user/models/current_user.dart';
 import 'package:logger/logger.dart';
 
 class GroupSelectionService {
   final Logger _logger = Logger();
   late final CurrentUser _currentUser;
-  GroupSelectionData _groupSelectionData = FirebaseGroupSelectionData();
+  final GroupSelectionData _groupSelectionData = FirebaseGroupSelectionData();
 
   GroupSelectionService(CurrentUser user) {
     _currentUser = user;
@@ -48,7 +47,6 @@ class GroupSelectionService {
   Future<Group> joinGroup(String joinCode) async {
     _logger.d("Joining group with join code: $joinCode");
     // get the group from the firestore database where the group join code is the same as the join code entered
-
     _logger.d("Group members updated with current user $_currentUser.uid");
     Group? group =
         await _groupSelectionData.joinGroup(joinCode, _currentUser.uid);
