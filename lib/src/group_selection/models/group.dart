@@ -28,7 +28,7 @@ class Group {
   Group({
     required this.joinCode,
     this.name,
-    required this.members         ,
+    required this.members,
     required this.admins,
     required this.created,
     required this.lastUpdated,
@@ -234,7 +234,8 @@ class Group {
     for (var mealLikes in group.mealLikes!) {
       if (mealLikes.userIds!.length == nMembers) {
         // Get the meal
-        MealData mealData = FirebaseMealData(); // TODO: This call may make sense to move to the Meal object so it is something like static Meal.getMealById(id);
+        MealData mealData =
+            FirebaseMealData(); // TODO: This call may make sense to move to the Meal object so it is something like static Meal.getMealById(id);
         Meal? meal = await mealData.getMealById(mealLikes.mealId);
         if (meal == null) return null;
         _logger.i('Found match for meal ${meal.id}');

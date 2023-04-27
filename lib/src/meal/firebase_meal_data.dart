@@ -26,8 +26,7 @@ class FirebaseMealData implements MealData {
         .onError((error, stackTrace) {
       _logger.e("Error getting meal $mealId: $error");
       return Future<DocumentSnapshot<Map<String, dynamic>>>.value(null);
-    }
-    );
+    });
 
     if (!mealDoc.exists) return null;
     Meal meal = Meal.fromDocument(mealDoc);
