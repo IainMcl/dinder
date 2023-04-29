@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dinder/src/meal/meal_data.dart';
-import 'package:dinder/src/selection/models/meal.dart';
+import 'package:dinder/src/meal/data/meal_data.dart';
+import 'package:dinder/src/meal/models/meal.dart';
 import 'package:logger/logger.dart';
 
 class FirebaseMealData implements MealData {
   final Logger _logger = Logger();
+
   @override
   Future<Meal> createMeal(Meal meal) {
     // TODO: implement createMeal
@@ -37,5 +38,22 @@ class FirebaseMealData implements MealData {
   Future<void> updateMeal(Meal meal) {
     // TODO: implement updateMeal
     throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Meal>> getMeals(List<String>? excludeMeals) async{
+    var mealDocs = await FirebaseFirestore.instance
+      .collection("meals")
+    .where(
+      FieldPath.documentId,
+      whereNotIn: excludeMeals
+    )
+    .get()
+    .catchError((error) => {
+      _logger.e("Error retreiving meals: $error")
+    });
+
+    var meals = mealDocs.docs.map((e) => Meal.fromDocument(e)).toList();
+    return meals;
   }
 }

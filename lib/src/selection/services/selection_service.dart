@@ -1,11 +1,9 @@
 import 'package:dinder/src/group_selection/models/group.dart';
-import 'package:dinder/src/selection/models/meal.dart';
+import 'package:dinder/src/meal/models/meal.dart';
 import 'package:dinder/src/selection/widgets/card_view.dart';
 import 'package:dinder/src/user/models/current_user.dart';
-import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:swipeable_card_stack/swipe_controller.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SelectionService {
   final _logger = Logger();

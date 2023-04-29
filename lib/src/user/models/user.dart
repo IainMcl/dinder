@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dinder/src/user/data/firebase_user_data.dart';
+import 'package:dinder/src/user/data/user_data.dart';
 import 'package:dinder/src/user/models/dietary_requirements.dart';
 import 'package:logger/logger.dart';
 
 class User {
   final Logger _logger = Logger();
+  final UserData _userData = FirebaseUserData();
   late final String _id;
   String? name;
   String? email;
@@ -38,9 +41,9 @@ class User {
   }
 
   static Future<User> getUser(String id) async {
-    DocumentSnapshot doc =
-        await FirebaseFirestore.instance.collection("users").doc(id).get();
-    return User.fromDocument(doc);
+    UserData userData = FirebaseUserData();
+    User user = await userData.getUser(id);
+    return user;
   }
 
   static Future<List<User>> getUsers(List<String> ids) async {
@@ -57,11 +60,11 @@ class User {
   }
 
   void saveUser() {
-    FirebaseFirestore.instance.collection("users").doc(_id).set(toMap());
+    _userData.saveUser(this);
   }
 
   delete() {
     // TODO: Delete all groups that the user the only admin in
-    FirebaseFirestore.instance.collection("users").doc(_id).delete();
+    _userData.deleteUser(_id);
   }
 }

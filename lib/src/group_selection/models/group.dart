@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:dinder/src/group_selection/data/firebase_group_data.dart';
 import 'package:dinder/src/group_selection/data/group_data.dart';
 import 'package:dinder/src/group_selection/models/meal_likes.dart';
-import 'package:dinder/src/meal/firebase_meal_data.dart';
-import 'package:dinder/src/meal/meal_data.dart';
-import 'package:dinder/src/selection/models/meal.dart';
+import 'package:dinder/src/meal/data/firebase_meal_data.dart';
+import 'package:dinder/src/meal/data/meal_data.dart';
+import 'package:dinder/src/meal/models/meal.dart';
 import 'package:dinder/src/user/models/current_user.dart';
 import 'package:logger/logger.dart';
 

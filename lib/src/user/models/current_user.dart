@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dinder/src/user/data/firebase_user_data.dart';
+import 'package:dinder/src/user/data/user_data.dart';
 import 'package:dinder/src/user/models/dietary_requirements.dart';
 import 'package:dinder/src/user/models/user.dart' as account_user;
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,6 +8,7 @@ import 'package:flutter/material.dart';
 
 class CurrentUser extends ChangeNotifier {
   late final account_user.User _user;
+  final UserData _userData = FirebaseUserData();
   bool initialized = false;
 
   Future<void> init() async {
@@ -35,11 +38,7 @@ class CurrentUser extends ChangeNotifier {
   // Methods
   void update() {
     // Update the user in the database
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(_user.id)
-        .update(_user.toMap());
-
+    _userData.updateUser(_user);
     notifyListeners();
   }
 
