@@ -1,6 +1,4 @@
-import 'dart:async';
-
-import 'package:dinder/src/selection/models/meal.dart';
+import 'package:dinder/src/meal/models/meal.dart';
 import 'package:dinder/src/selection/widgets/icon_number.dart';
 import 'package:flutter/material.dart';
 

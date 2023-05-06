@@ -1,13 +1,17 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dinder/src/group_selection/data/firebase_group_data.dart';
+import 'package:dinder/src/group_selection/data/group_data.dart';
 import 'package:dinder/src/group_selection/models/meal_likes.dart';
-import 'package:dinder/src/selection/models/meal.dart';
+import 'package:dinder/src/meal/data/firebase_meal_data.dart';
+import 'package:dinder/src/meal/data/meal_data.dart';
+import 'package:dinder/src/meal/models/meal.dart';
 import 'package:dinder/src/user/models/current_user.dart';
 import 'package:logger/logger.dart';
 
 class Group {
   final Logger _logger = Logger();
+  final GroupData _groupData = FirebaseGroupData();
 
   final String joinCode;
   String? name;
@@ -24,7 +28,7 @@ class Group {
   Group({
     required this.joinCode,
     this.name,
-    required this.members         ,
+    required this.members,
     required this.admins,
     required this.created,
     required this.lastUpdated,
@@ -69,11 +73,11 @@ class Group {
     } else {
       mealLikes = [];
     }
-    var created = (map['created'] as Timestamp).toDate();
-    var lastUpdated = (map['lastUpdated'] as Timestamp).toDate();
+    var created = map['created'].toDate();
+    var lastUpdated = map['lastUpdated'].toDate();
     DateTime mealDate;
     if (map['mealDate'] != null) {
-      mealDate = (map['mealDate'] as Timestamp).toDate();
+      mealDate = map['mealDate'].toDate();
     } else {
       mealDate = DateTime.now();
     }
@@ -139,13 +143,7 @@ class Group {
   Future<void> update(CurrentUser currentUser) async {
     lastUpdated = DateTime.now();
     lastUpdatedBy = currentUser.user.id;
-    await FirebaseFirestore.instance
-        .collection('groups')
-        .doc(id)
-        .update(toMap())
-        .onError((error, stackTrace) =>
-            {_logger.e("Error updating group: $error : $stackTrace")});
-    _logger.d("Updated group $id");
+    await _groupData.updateGroup(this);
   }
 
   void addMember(String uid, CurrentUser currentUser) {
@@ -214,14 +212,7 @@ class Group {
     CurrentUser currentUser = CurrentUser();
     await currentUser.init();
     if (admins.contains(currentUser.uid)) {
-      FirebaseFirestore.instance
-          .collection('groups')
-          .doc(id)
-          .delete()
-          .catchError((error) {
-        _logger.e("Error deleting group $id: $error");
-      });
-      _logger.d("Deleted group $id");
+      _groupData.deleteGroup(id);
     } else {
       // Raise error that the current user is not an admin
       _logger
@@ -234,13 +225,8 @@ class Group {
   Future<Meal?> checkForMatches() async {
     _logger.i('Checking for matches in group $id');
     // Get the most recent group document
-    var groupCollection = FirebaseFirestore.instance.collection('groups');
-    var groupDoc = await groupCollection.doc(id).get();
-
-    if (!groupDoc.exists) return null;
-
-    Group group = Group.fromMap(groupDoc.data()!);
-
+    Group? group = await _groupData.getGroupById(id);
+    if (group == null) return null;
     if (group.mealLikes == null) return null;
 
     int nMembers = group.members.length;
@@ -248,17 +234,10 @@ class Group {
     for (var mealLikes in group.mealLikes!) {
       if (mealLikes.userIds!.length == nMembers) {
         // Get the meal
-        var mealDoc = await FirebaseFirestore.instance
-            .collection('meals')
-            .doc(mealLikes.mealId)
-            .get()
-            .onError((error, stackTrace) {
-          _logger.e("Error getting meal ${mealLikes.mealId}: $error");
-          return Future<DocumentSnapshot<Map<String, dynamic>>>.value(null);
-        });
-
-        if (!mealDoc.exists) return null;
-        Meal meal = Meal.fromDocument(mealDoc);
+        MealData mealData =
+            FirebaseMealData(); // TODO: This call may make sense to move to the Meal object so it is something like static Meal.getMealById(id);
+        Meal? meal = await mealData.getMealById(mealLikes.mealId);
+        if (meal == null) return null;
         _logger.i('Found match for meal ${meal.id}');
         _mealMatchController.add(meal);
         _logger.i(

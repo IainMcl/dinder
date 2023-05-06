@@ -1,5 +1,5 @@
+import 'package:dinder/src/meal/models/meal.dart';
 import 'package:dinder/src/meal/screens/meal_view.dart';
-import 'package:dinder/src/selection/models/meal.dart';
 import 'package:flutter/material.dart';
 
 class MatchModal extends StatelessWidget {

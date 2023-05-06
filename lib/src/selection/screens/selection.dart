@@ -1,6 +1,6 @@
 import 'package:dinder/src/group_selection/models/group.dart';
-import 'package:dinder/src/selection/models/ingredient.dart';
-import 'package:dinder/src/selection/models/meal.dart';
+import 'package:dinder/src/meal/models/ingredient.dart';
+import 'package:dinder/src/meal/models/meal.dart';
 import 'package:dinder/src/selection/services/selection_service.dart';
 import 'package:dinder/src/selection/widgets/card_view.dart';
 import 'package:dinder/src/selection/widgets/match_modal.dart';

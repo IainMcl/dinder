@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dinder/src/selection/models/ingredient.dart';
+import 'package:dinder/src/meal/data/firebase_meal_data.dart';
+import 'package:dinder/src/meal/data/meal_data.dart';
+import 'package:dinder/src/meal/models/ingredient.dart';
 import 'package:logger/logger.dart';
 
 class Meal {
@@ -80,20 +82,8 @@ class Meal {
 
   static Future<List<Meal>> getMeals([List<String>? userLikedMeals]) async {
     userLikedMeals ??= [];
-    List<Meal> meals = [];
-    var mealDocs = await FirebaseFirestore.instance
-        .collection("meals")
-        // Only get meals who's id is not in the user's liked meals
-        .where(
-          FieldPath.documentId,
-          // whereNotIn: userLikedMeals,
-        )
-        .get()
-        .catchError((e) => {
-              Logger().e("Error retrieving meals: $e"),
-            });
-
-    meals = mealDocs.docs.map((e) => Meal.fromDocument(e)).toList();
+    MealData mealData = FirebaseMealData();
+    List<Meal> meals = await mealData.getMeals(userLikedMeals);
 
     // TODO: Remove this when we have more meals
     // Repeat the meals to make sure we have enough 100 times
