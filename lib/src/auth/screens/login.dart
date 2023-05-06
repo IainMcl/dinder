@@ -1,4 +1,5 @@
 import 'package:dinder/src/auth/widgets/login_body.dart';
+import 'package:dinder/src/shared/widgets/carousel.dart';
 
 import 'package:flutter/material.dart';
 
@@ -15,7 +16,8 @@ class _LoginState extends State<Login> {
     return const SafeArea(
       child: Scaffold(
         body: Center(
-          child: LoginBodyScreen(),
+          /* child: LoginBodyScreen(), */
+          child: Carousel(),
         ),
       ),
     );

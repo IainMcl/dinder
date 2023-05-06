@@ -1,4 +1,5 @@
 import 'package:dinder/src/auth/screens/sign_up.dart';
+import 'package:dinder/src/shared/widgets/carousel.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:dinder/src/shared/widgets/button.dart';
 import 'package:dinder/src/shared/widgets/textfield.dart';
@@ -20,6 +21,12 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
   final Logger _logger = Logger();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  static const double pushUpBorderRadius = 30;
+  static const String fontColor = "#8d8d8d";
+  static const String highlightFontColor = "#44564a";
+  Color primaryColor = HexColor("#89b2f5");
+  Color secondaryColor = const Color(0xffffffff);
 
   void signUserIn() async {
     // Show spinner dialog
@@ -119,7 +126,7 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        backgroundColor: HexColor("#fed8c3"),
+        backgroundColor: primaryColor,
         body: ListView(
           padding: const EdgeInsets.fromLTRB(0, 400, 0, 0),
           shrinkWrap: true,
@@ -130,14 +137,15 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
               children: [
                 Stack(
                   children: [
+                    const Carousel(),
                     Container(
                       height: 535,
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        color: HexColor("#ffffff"),
+                        color: secondaryColor,
                         borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(40),
-                          topRight: Radius.circular(40),
+                          topLeft: Radius.circular(pushUpBorderRadius),
+                          topRight: Radius.circular(pushUpBorderRadius),
                         ),
                       ),
                       child: Padding(
@@ -146,7 +154,7 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Log In",
+                              "Log in",
                               style: GoogleFonts.poppins(
                                 fontSize: 32,
                                 fontWeight: FontWeight.bold,
@@ -165,7 +173,7 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
                                     "Email",
                                     style: GoogleFonts.poppins(
                                       fontSize: 16,
-                                      color: HexColor("#8d8d8d"),
+                                      color: HexColor(fontColor),
                                     ),
                                   ),
                                   const SizedBox(
@@ -176,7 +184,7 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
                                       validateEmail(emailController.text);
                                     }),
                                     controller: emailController,
-                                    hintText: "hello@gmail.com",
+                                    hintText: "hello@email.com",
                                     obscureText: false,
                                     prefixIcon: const Icon(Icons.mail_outline),
                                   ),
@@ -198,7 +206,7 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
                                     "Password",
                                     style: GoogleFonts.poppins(
                                       fontSize: 16,
-                                      color: HexColor("#8d8d8d"),
+                                      color: HexColor(fontColor),
                                     ),
                                   ),
                                   const SizedBox(
@@ -206,7 +214,7 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
                                   ),
                                   CustomTextField(
                                     controller: passwordController,
-                                    hintText: "**************",
+                                    hintText: "********",
                                     obscureText: true,
                                     prefixIcon: const Icon(Icons.lock_outline),
                                   ),
@@ -215,7 +223,7 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
                                   ),
                                   Button(
                                     onPressed: signUserIn,
-                                    buttonText: 'Submit',
+                                    buttonText: 'Log in',
                                   ),
                                   const SizedBox(
                                     height: 2,
@@ -225,10 +233,10 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                        "Or sign in with",
+                                        "Or log in with",
                                         style: GoogleFonts.poppins(
                                           fontSize: 14,
-                                          color: HexColor("#8d8d8d"),
+                                          color: HexColor(fontColor),
                                         ),
                                       ),
                                     ],
@@ -242,12 +250,17 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
                                       TextButton(
                                         onPressed: () {},
                                         child: Icon(FontAwesomeIcons.google,
-                                            color: HexColor("#8d8d8d")),
+                                            color: HexColor(fontColor)),
                                       ),
                                       TextButton(
                                         onPressed: () {},
                                         child: Icon(FontAwesomeIcons.apple,
-                                            color: HexColor("#8d8d8d")),
+                                            color: HexColor(fontColor)),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {},
+                                        child: Icon(FontAwesomeIcons.github,
+                                            color: HexColor(fontColor)),
                                       ),
                                     ],
                                   ),
@@ -259,14 +272,15 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
                                         Text("Don't have an account?",
                                             style: GoogleFonts.poppins(
                                               fontSize: 14,
-                                              color: HexColor("#8d8d8d"),
+                                              color: HexColor(fontColor),
                                             )),
                                         TextButton(
                                           child: Text(
-                                            "Sign Up",
+                                            "Sign up",
                                             style: GoogleFonts.poppins(
+                                              decoration: TextDecoration.underline,
                                               fontSize: 14,
-                                              color: HexColor("#44564a"),
+                                              color: HexColor(highlightFontColor),
                                             ),
                                           ),
                                           onPressed: () => Navigator.push(
@@ -288,12 +302,14 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
                       ),
                     ),
                     Transform.translate(
-                      offset: const Offset(0, -253),
-                      child: Image.asset(
-                        'assets/images/plants2.png',
-                        scale: 1.5,
-                        width: double.infinity,
-                      ),
+                      /* offset: const Offset(0, -253), */
+                      offset: const Offset(200, -253),
+                      child: const Text("Logo")
+                      // Image.asset(
+                      //   'assets/images/plants2.png',
+                      //   scale: 1.5,
+                      //   width: double.infinity,
+                      // ),
                     ),
                   ],
                 )
